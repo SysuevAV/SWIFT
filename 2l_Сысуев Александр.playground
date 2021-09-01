@@ -1,0 +1,112 @@
+import Foundation
+
+// 1. Написать функцию, которая определяет, чётное число или нет
+func test (_ a: Int) {
+    if (a % 2 == 0) {
+        print("Число чётное")
+    }
+    else {
+        print("Число не чётное")
+    }
+    }
+test(7)
+
+
+// 2. Написать функцию, которая определяет, делится число без остатка на 3.
+
+func test2 (_ b: Int) {
+    if (b % 3 == 0) {
+        print("Число делится на 3")
+    }
+    else {
+        print("Число не делится на 3")
+    }
+    }
+test2 (6)
+
+
+// 3. Создать возрастающий массив из 100 чисел.
+
+var array: [Int] = []
+for i in 0 ... 100 {
+    array.append(i)
+}
+print(array)
+
+
+// 4. Удалить из этого массива все чётные числа и все числа, которые не делятся на 3.
+
+for value in array {
+    if (value % 2) == 0 {
+        array.remove( at: array.firstIndex(of: value)!)
+    }
+    else if (value % 3) == 0 {
+        array.remove( at: array.firstIndex(of: value)!)
+    }
+}
+print(array)
+
+
+/* 5. Написать функцию, которая добавляет в массив новое число Фибоначчи, и добавит при помощи неё 50 элементов.
+ Числа Фибоначчи определяются соотношениями Fn = Fn - 1 + Fn - 2
+ */
+
+func fibonacci (n: Int) -> (Int) {
+    if (n<3) {
+        return 1
+    } else {
+        var z1: Int = 1, z2: Int = 1, z: Int
+        for _ in 3...n {
+            z = z1+z2
+            z1 = z2
+            z2 = z
+        }
+        return z2
+    }
+}
+
+var fibArray = [Int]()
+fibArray.append(0)
+var n  = 50
+for i in 1...n {
+    fibArray.append(fibonacci(n: i))
+}
+print(fibArray)
+
+
+
+
+/* 6. Заполнить массив элементов различными простыми числами. Натуральное число, большее единицы, называется простым, если оно делится только на себя и на единицу. Для нахождения всех простых чисел не больше заданного числа n (пусть будет 100), следуя методу Эратосфена, нужно выполнить следующие шаги:
+ a. Выписать подряд все целые числа от двух до n (2, 3, 4, ..., n).
+ b. Пусть переменная p изначально равна двум - первому простому числу.
+ c. Зачеркнуть числа от 2 + p до n, считая шагом p.
+ d. Найти первое не зачёркнутое число в списке, большее, чем p, и присвоить значению переменной p это число.
+ e. Повторять шаги c и d, пока возможно.
+ */
+
+func Prime (num: Int) -> Bool {
+    if num < 2 {
+        return false
+    }
+    for i in 2..<num {
+        if num % i == 0 {
+            return false
+        }
+    }
+    
+    return true
+}
+func PrimeArray () -> [Int] {
+    var results = [Int]()
+    var i = 2
+    while results.count < 100 {
+        if Prime(num: i) {
+            results.append(i)
+        }
+        i += 1
+    }
+    
+    return results
+}
+print (PrimeArray())
+
