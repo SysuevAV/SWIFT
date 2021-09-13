@@ -1,0 +1,150 @@
+import Foundation
+
+
+class Car {
+    let brand: String
+    let produktionYear: Int
+    var engine: EngineStatus = .off
+    var windows: WindowsStatus = .closed
+    
+    enum EngineStatus: CustomStringConvertible {
+        case on, off
+        
+        var description: String {
+            switch self {
+            case .on:
+                return "Двигатель заведён"
+            case .off:
+                return "Двигатель заглушен"
+            }
+        }
+    }
+    enum WindowsStatus: CustomStringConvertible {
+        case opened, closed
+        
+        var description: String {
+            switch self {
+            case .opened:
+                return "Окна открыты"
+            case .closed:
+                return "Окна закрыты"
+            }
+        }
+        
+    }
+    
+    enum TruckBodyType: CustomStringConvertible {
+        case box, tank, refrigerator
+        
+        var description: String {
+            switch self {
+            case .box:
+                return "Стандартный кузов"
+            case .tank:
+                return "Цистерна"
+            case .refrigerator:
+                return "Холодильная камера"
+            }
+        }
+    }
+    
+    enum Action {
+        case switchEngine(EngineStatus)
+        case switchWindows (WindowsStatus)
+        case loadCargo(Double)
+        case attachTruckBody(TruckBodyType)
+        case replaceTyres
+    }
+    
+    init(brand: String, productionYear: Int) {
+        self.brand = brand
+        self.produktionYear = productionYear
+    }
+    
+    func perform(action: Action) {
+    }
+}
+
+class TrunkCar: Car, CustomStringConvertible {
+    
+    static var typeTruck = "Грузовой автомобиль"
+    let maxCargoSpace: Double
+    var currentCargoSpace: Double = 0
+    var body: TruckBodyType?
+    
+    var description: String {
+        let bodyDescription = body?.description ?? "Отцеплен"
+        
+        return "\(TrunkCar.typeTruck) \(brand)\n Год выпуска: \(produktionYear) г\n Кузов: \(bodyDescription)\n Залито: \(currentCargoSpace) м.куб\n Полная вместимость: \(maxCargoSpace) м.куб\n Состояние: \(engine) | \(windows)\n"
+    }
+    
+    init(brand: String, productionYear: Int, maxCargoSpase: Double, body: TruckBodyType?) {
+        self.body = body
+        self.maxCargoSpace = 2500
+        super.init(brand: brand, productionYear: productionYear)
+    }
+    
+    override func perform(action: Action) {
+        switch action {
+        case .switchEngine(let status):
+            engine = status
+        case .switchWindows(let status):
+            windows = status
+        case .loadCargo(let load):
+            guard body != nil else {
+                return
+            }
+            let expectetLoad = load + currentCargoSpace
+            switch expectetLoad {
+            case _ where expectetLoad > maxCargoSpace:
+                currentCargoSpace = maxCargoSpace
+            case _ where expectetLoad < 0:
+                currentCargoSpace = 0
+            default:
+                currentCargoSpace += load
+            }
+        case .attachTruckBody(let newBody):
+            self.body = newBody
+            currentCargoSpace = 0
+        default:
+            break
+        }
+    }
+}
+class SportCar: Car, CustomStringConvertible {
+    var typeSportCar = "Спортивный автомобиль"
+    var zeroToHundredAcceleration: Double = 0.0
+    var topSpeed: Int = 0
+    
+    var description: String {
+        return "\(typeSportCar) \(brand)\n Год выпуска: \(produktionYear) г\n Разгон 0-100 км/ч: \(zeroToHundredAcceleration) с\n Максимальная скорость: \(topSpeed) км/ч\n Состояние: \(engine) | \(windows)\n"
+    }
+    init(brand: String, productionYear: Int, zeroToHundredAcceleration: Double, tpSpeed: Int) {
+        self.zeroToHundredAcceleration = zeroToHundredAcceleration
+        self.topSpeed = 360
+        super.init(brand: brand, productionYear: productionYear)
+    }
+    override func perform(action: Action){
+        switch action {
+        case .switchEngine(let status):
+            engine = status
+        case .switchWindows(let status):
+            windows = status
+        case .replaceTyres:
+            print("Произведена замена шин!")
+        default:
+            break
+        }
+    }
+}
+var manTruck = TrunkCar(brand: "Volvo", productionYear: 1990, maxCargoSpase: 2100, body: nil)
+manTruck.perform(action: .attachTruckBody(.tank))
+manTruck.perform(action: .loadCargo(1300))
+manTruck.perform(action: .switchEngine(.on))
+print(manTruck)
+
+var porshe = SportCar(brand: "Porshe 911", productionYear: 2019, zeroToHundredAcceleration: 3.6, tpSpeed: 360)
+porshe.perform(action: .switchWindows(.closed))
+porshe.perform(action: .replaceTyres)
+porshe.perform(action: .switchEngine(.on))
+print(porshe)
